@@ -1,0 +1,54 @@
+--- 
+- name: Setup volumes
+ hosts: all
+ become: true
+ tasks:
+   - name: Create partition
+     parted:
+       device: /dev/sdb
+       number: 1
+       flags: [ lvm ]
+       state: present
+     when: "ansible_facts['devices']['sdb'] is defined"
+
+   - name: Create volume group
+     lvg:
+       vg: vg0
+       pvs: /dev/sdb1
+     when: "ansible_facts['devices']['sdb'] is defined"
+
+   - name: Create logical volume
+     lvol:
+       vg: vg0
+       lv: lv0
+       size: 1500m
+       state: present
+     when: "ansible_facts['devices']['sdb'] is defined and ansible_lvm['vgs']['vg0'] is defined and ansible_lvm['lvs']['lv0'] is not defined and (ansible_lvm['vgs']['vg0']['free_g'] | float) > 1.5"
+
+   - name: Print error message
+     debug:
+       msg: "Not enough space in volume group"
+     when: "ansible_facts['devices']['sdb'] is defined and ansible_lvm['vgs']['vg0'] is defined and (ansible_lvm['vgs']['vg0']['free_g']) | float <= 1.5"
+
+   - name: Create logical volume
+     lvol:
+       vg: vg0
+       lv: lv0
+       size: 800m
+       state: present
+     when: "ansible_facts['devices']['sdb'] is defined and ansible_lvm['vgs']['vg0'] is defined and ansible_lvm['lvs']['lv0'] is not defined and (ansible_lvm['vgs']['vg0']['free_g']) | float > 0.8"
+
+   - name: Create the file system
+     filesystem:
+       dev: /dev/vg0/lv0
+       state: present
+       fstype: xfs
+     when: "ansible_lvm['lvs']['lv0'] is defined"
+
+   - name: Mount file system
+     mount:
+       src: /dev/vg0/lv0
+       path: /mnt/data
+       state: mounted
+       fstype: xfs
+     when: "ansible_lvm['lvs']['lv0'] is defined"
