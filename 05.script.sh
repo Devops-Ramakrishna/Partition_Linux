@@ -28,7 +28,7 @@ fi
 
 # Partitioning disk
 echo "Creating partitions on /dev/$disk..."
-(echo n; echo p; echo 1; echo ; echo +200G; echo n; echo p; echo 2; echo ; echo +250G; echo n; echo p; echo 3; echo ; echo ; echo w) | fdisk /dev/$disk
+(echo n; echo p; echo 1; echo ; echo +200G; echo n; echo p; echo 2; echo ; echo +250G; echo n; echo p; echo 3; echo ; echo ; echo t; echo 1; echo 8e; echo w) | fdisk /dev/$disk
 
 # Formatting partitions
 echo "Formatting partitions..."
