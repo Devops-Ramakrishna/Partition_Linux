@@ -1,3 +1,4 @@
+#!/bin/bash
 # Kickstart file for RHEL 9.3
 
 # Install OS
