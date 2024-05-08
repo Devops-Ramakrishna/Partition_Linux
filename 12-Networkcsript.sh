@@ -1,10 +1,18 @@
 #!/bin/bash
 
 # first check which interface is up:
-ip addr show | grep "state UP" | awk -F ':' '{print $2}'
+INTERFACE=$(ip addr show | grep "state UP" | awk -F ':' '{print $2}'| head -1)
+echo "$INTERFACE"
+
+if [ -n "$INTERFACE" ]; then
+    echo "The first active network interface is: $INTERFACE"
+else
+    echo "No active network interface found."
+    exit 1
+fi
 
 # Set network interface name
-INTERFACE="enp1s0"
+INTERFACE="$INTERFACE"
 
 # Set static IP address, netmask, gateway, and DNS servers
 IP_ADDRESS="10.81.75.165/24"
