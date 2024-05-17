@@ -38,10 +38,10 @@ sed -i '/^address1=/d' "$FILE"
 sed -i '/^dns=/d' "$FILE"
 
 # Set static IP address, netmask, gateway, and DNS servers
-IP_ADDRESS="192.168.19.135/24"
+IP_ADDRESS="192.168.122.64/24"
 NETMASK="255.255.255.0"
-GATEWAY="192.168.19.2"
-DNS_SERVER="8.8.8.8,8.8.4.4"
+GATEWAY="192.168.122.1"
+DNS_SERVER="10.81.90.1"
 
 # Create the NetworkManager connection profile
 # vi /etc/NetworkManager/system-connections/$INTERFACE
